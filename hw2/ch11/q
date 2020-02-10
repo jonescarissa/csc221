@@ -1,0 +1,26 @@
+total 98
+-rw-r--r-- 1 cj917 197609   622 Nov  4 16:07 bash.bash_logout
+-rw-r--r-- 1 cj917 197609  2488 Nov  4 16:07 bash.bashrc
+-rw-r--r-- 1 cj917 197609  4339 Nov  4 16:07 DIR_COLORS
+-rw-r--r-- 1 cj917 197609  1744 Nov  4 16:07 docx2txt.config
+-rw-r--r-- 1 cj917 197609   271 Nov  4 16:07 fstab
+-rw-r--r-- 1 cj917 197609   515 Nov  8 14:08 gitattributes
+-rw-r--r-- 1 cj917 197609   355 Jan 13 13:26 gitconfig
+-rw-r--r-- 1 cj917 197609  2413 Dec 13 17:58 hosts
+-rw-r--r-- 1 cj917 197609  2710 Nov 29 19:30 inputrc
+-rw-r--r-- 1 cj917 197609   321 Jan 13 13:26 install-options.txt
+-rw-r--r-- 1 cj917 197609  1826 Nov  4 16:07 msystem
+lrwxrwxrwx 1 cj917 197609    12 Jan 13 13:26 mtab -> /proc/mounts
+-rw-r--r-- 1 cj917 197609 10434 Nov  4 16:07 nanorc
+-rw-r--r-- 1 cj917 197609   407 Mar 18  2019 networks
+-rw-r--r-- 1 cj917 197609   211 Nov  4 16:07 nsswitch.conf
+-rw-r--r-- 1 cj917 197609  3651 Dec  7 20:09 package-versions.txt
+drwxr-xr-x 1 cj917 197609     0 Jan 13 13:25 pkcs11/
+drwxr-xr-x 1 cj917 197609     0 Jan 13 13:25 pki/
+-rw-r--r-- 1 cj917 197609  6675 Nov  4 16:07 profile
+drwxr-xr-x 1 cj917 197609     0 Jan 13 13:26 profile.d/
+-rw-r--r-- 1 cj917 197609  1358 Mar 18  2019 protocols
+-rw-r--r-- 1 cj917 197609 17635 Mar 18  2019 services
+drwxr-xr-x 1 cj917 197609     0 Jan 13 13:25 ssh/
+-rw-r--r-- 1 cj917 197609 17683 Nov 21 13:52 tigrc
+-rw-r--r-- 1 cj917 197609  2904 Nov 29 19:30 vimrc
