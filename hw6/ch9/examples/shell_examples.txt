@@ -1,0 +1,249 @@
+# Part 1
+
+Files and File Paths
+    Backslash on Windows and Forward Slash on macOS and Linux:
+        >>> from pathlib import Path
+        >>> Path('spam', 'bacon', 'eggs')
+        WindowsPath('spam/bacon/eggs')
+        >>> str(Path('spam', 'bacon', 'eggs'))
+        'spam\\bacon\\eggs'
+
+    Using the / Operator to Join Paths:
+        >>> from pathlib import Path
+        >>> Path('spam')/'bacon'/'eggs'
+        WindowsPath('spam/bacon/eggs')
+        >>> Path('spam')/Path('bacon/eggs')
+        WindowsPath('spam/bacon/eggs')
+        >>> Path('spam')/Path('bacon', 'eggs')
+        WindowsPath('spam/bacon/eggs')
+
+        >>> homeFolder = r'C:\Users\cj917'
+        >>> subFolder = 'spam'
+        >>> homeFolder + '\\' + subFolder
+        'C:\\Users\\cj917\\spam'
+        >>> '\\'.join([homeFolder, subFolder])
+        'C:\\Users\\cj917\\spam'
+
+        >>> homeFolder = Path('C:/Users/cj917')
+        >>> subFolder = Path('spam')
+        >>> homeFolder / subFolder
+        WindowsPath('C:/Users/cj917/spam')
+        >>> str(homeFolder / subFolder)
+        'C:\\Users\\cj917\\spam'
+
+        >>> 'spam'/'bacon'/'eggs'
+        Traceback (most recent call last):
+        File "<stdin>", line 1, in <module>
+        TypeError: unsupported operand type(s) for /: 'str' and 'str'
+
+    The Current Working Directory:
+        >>> from pathlib import Path
+        >>> import os
+        >>> Path.cwd()
+        WindowsPath('C:/Users/cj917/Documents/courses/csc221/hw6/ch9/examples')
+        >>> os.chdir('C:\\Windows\\System32')
+        >>> Path.cwd()
+        WindowsPath('C:/Windows/System32')
+
+        >>> os.chdir('C:/ThisFolderDoesNotExist')
+        Traceback (most recent call last):
+            File "<stdin>", line 1, in <module>
+        FileNotFoundError: [WinError 2] The system cannot find the file specified: 
+        'C:/ThisFolderDoesNotExist'
+
+    The Home Directory:
+        >>> Path.home()
+        WindowsPath('C:/Users/cj917')
+
+    Creating New Folders Using the os.makedirs() Function:
+        >>> import os
+        >>> os.makedirs('C:\\delicious\\walnut\\waffles')
+        >>> from pathlib import Path
+        >>> Path(r'C:\Users\cj917\spam').mkdir()
+
+    Handling Absolute and Relative Paths:
+        >>> Path.cwd()
+        WindowsPath('C:/Users/cj917/Documents/courses/csc221/hw6/ch9/examples')
+        >>> Path.cwd().is_absolute()
+        True
+        >>> Path('spam/bacon/eggs').is_absolute()
+        False
+
+        >>> Path('my/relative/path')
+        WindowsPath('my/relative/path')
+        >>> Path.cwd()/Path('my/relative/path')
+        WindowsPath('C:/Users/cj917/Documents/courses/csc221/hw6/
+        ch9/examples/my/relative/path')
+
+        >>> os.path.abspath('.')
+        'C:\\Users\\cj917\\Documents\\courses\\csc221\\hw6\\ch9\\examples'
+        >>> os.path.abspath('.\\Scripts')
+        'C:\\Users\\cj917\\Documents\\courses\\csc221\\hw6\\ch9\\examples\\Scripts'
+        >>> os.path.isabs('.')
+        False
+        >>> os.path.isabs(os.path.abspath('.'))
+        True
+
+        >>> os.path.relpath('C:\\Windows', 'C:\\')
+        'Windows'
+        >>> os.path.relpath('C:\\Windows', 'C:\\spam\\eggs')
+        '..\\..\\Windows'
+
+    Getting the Parts of a File Path:
+        >>> p.anchor
+        'C:\\'
+        >>> p.parent
+        WindowsPath('C:/Users/cj917')
+        >>> p.name
+        'spam.txt'
+        >>> p.stem
+        'spam'
+        >>> p.suffix
+        '.txt'
+        >>> p.drive
+        'C:'
+
+        >>> Path.cwd()
+        WindowsPath('C:/Users/cj917/Documents/courses/csc221/hw6/ch9/examples')
+        >>> Path.cwd().parents[0]
+        WindowsPath('C:/Users/cj917/Documents/courses/csc221/hw6/ch9')
+        >>> Path.cwd().parents[1]
+        WindowsPath('C:/Users/cj917/Documents/courses/csc221/hw6')
+        >>> Path.cwd().parents[2]
+        WindowsPath('C:/Users/cj917/Documents/courses/csc221')
+        >>> Path.cwd().parents[3]
+        WindowsPath('C:/Users/cj917/Documents/courses')
+        >>> Path.cwd().parents[4]
+        WindowsPath('C:/Users/cj917/Documents')
+        >>> Path.cwd().parents[5]
+        WindowsPath('C:/Users/cj917')
+        >>> Path.cwd().parents[6]
+        WindowsPath('C:/Users')
+        >>> Path.cwd().parents[7]
+        WindowsPath('C:/')
+
+        >>> calcFilePath = 'C:\\Windows\\System32\\calc.exe'
+        >>> calcFilePath
+        'C:\\Windows\\System32\\calc.exe'
+        >>> os.path.basename(calcFilePath)
+        'calc.exe'
+        >>> os.path.dirname(calcFilePath)
+        'C:\\Windows\\System32'
+
+        >>> calcFilePath = 'C:\\Windows\\System32\\calc.exe'
+        >>> os.path.split(calcFilePath)
+        ('C:\\Windows\\System32', 'calc.exe')
+        >>> (os.path.dirname(calcFilePath), os.path.basename(calcFilePath))
+        ('C:\\Windows\\System32', 'calc.exe')
+
+        >>> calcFilePath.split(os.sep)
+        ['C:', 'Windows', 'System32', 'calc.exe']
+        >>> '/usr/bin'.split(os.sep)
+        ['/usr/bin']
+
+    Modifying a List of Files Using Glob Patterns:
+        >>> p = Path('C:/Users/cj917/Desktop')
+        >>> p.glob('*')
+        <generator object Path.glob at 0x0000024470C27648>
+        >>> list(p.glob('*'))
+        [] 
+
+    Checking Path Validity:
+        >>> winDir = Path('C:/Windows')
+        >>> notExistsDir = Path('C:/This/Folder/Does/Not/Exist')
+        >>> calcFile = Path('C:/Windows/System32/calc.exe')
+        >>> winDir.exists()
+        True
+        >>> winDir.is_dir()
+        True
+        >>> notExistsDir.exists()
+        False
+        >>> calcFile.is_file()
+        True
+        >>> calcFile.is_dir()
+        False
+        >>> dDrive = Path('D:/')
+        >>> dDrive.exists()
+        False
+
+The File Reading/Writing Process
+    >>> from pathlib import Path
+    >>> p = Path('spam.txt')
+    >>> p.write_text('Hello, world!')
+    13
+    >>> p.read_text()
+    'Hello, world!'
+
+    Opening Files with the open() Function:
+        >>> from pathlib import Path
+        >>> helloFile = open(Path.home()/'hello.txt')
+        >>> helloFile = open('C:\\Users\\cj917\\hello.txt')
+
+    Reading the Contents of Files:
+        >>> helloContent = helloFile.read()
+        >>> helloContent
+        'Hello, world!'
+
+        >>> sonnetFile = open(Path.home()/'sonnet29.txt')
+        >>> sonnetFile.readlines()
+        ["When, in disgrace with fortune and men's eyes,\n", 
+        'I all alone beweep my outcast state,\n', 
+        'And trouble deaf heaven with my bootless cries,\n',
+        'And look upon myself and curse my fate.']
+
+    Writing to Files:
+        >>> baconFile = open('bacon.txt', 'w')
+        >>> baconFile.write('Hello, world!\n')
+        14
+        >>> baconFile.close()
+        >>> baconFile = open('bacon.txt', 'a')
+        >>> baconFile.write('Bacon is a not a vegtable.')
+        26
+        >>> baconFile.close()
+        >>> baconFile = open('bacon.txt')
+        >>> content = baconFile.read()
+        >>> baconFile.close()
+        >>> print(content)
+        Hello, world!
+        Bacon is a not a vegtable.
+    
+Saving Variables with the Shelve Module
+    >>> import shelve
+    >>> shelfFile = shelve.open('mydata')
+    >>> cats = ['Zophie', 'Pooka', 'Simon']
+    >>> shelfFile['cats'] = cats
+    >>> shelfFile.close()
+    >>> shelfFile = shelve.open('mydata')
+    >>> type(shelfFile)
+    <class 'shelve.DbfilenameShelf'>
+    >>> shelfFile['cats']
+    ['Zophie', 'Pooka', 'Simon']
+    >>> shelfFile.close()
+    >>> shelfFile = shelve.open('mydata')
+    >>> list(shelfFile.values())
+    [['Zophie', 'Pooka', 'Simon']]
+    >>> shelfFile.close()
+
+Saving Variables with the pprint.pformat() Function
+    >>> import pprint
+    >>> cats = [{'name': 'Zophie', 'desc': 'chubby'}, {'name': 'Pooka', 'desc': 'fluffy'}]
+    >>> pprint.pformat(cats)
+    "[{'desc': 'chubby', 'name': 'Zophie'}, {'desc': 'fluffy', 'name': 'Pooka'}]"
+    >>> fileObj = open('myCats.py', 'w')
+    >>> fileObj.write('cats =' + pprint.pformat(cats) + '\n')
+    82
+    >>> fileObj.close()
+
+    >>> import myCats
+    >>> myCats.cats
+    [{'desc': 'chubby', 'name': 'Zophie'}, {'desc': 'fluffy', 'name': 'Pooka'}]
+    >>> myCats.cats[0]
+    {'desc': 'chubby', 'name': 'Zophie'}
+    >>> myCats.cats[0]['name']
+    'Zophie'
+
+
+
+
+
+
