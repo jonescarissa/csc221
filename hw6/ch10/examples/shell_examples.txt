@@ -1,0 +1,79 @@
+# Part 5
+
+The Shutil Module
+    Copying Files and Folders:
+        >>> from pathlib import Path
+        >>> import shutil, os
+        >>> from pathlib import Path
+        >>> p = Path.home()
+        >>> shutil.copy(p/'hello.txt', p/'some_folder')
+        WindowsPath('C:/Users/cj917/some_folder')
+        >>> shutil.copy(p/'sonnet29.txt', p/'spam/sonnet292.txt')
+        WindowsPath('C:/Users/cj917/spam/sonnet292.txt')
+
+        >>> import shutil, os
+        >>> from pathlib import Path
+        >>> p = Path.home()
+        >>> shutil.copytree(p/'spam', p/'spam_backup')
+        WindowsPath('C:/Users/cj917/spam_backup')
+
+    Moving and Renaming Files and Folders:
+        >>> import shutil
+        >>> shutil.move('C:\\bacon.txt', 'C:\\eggs')
+        'C:\\eggs\\bacon.txt'
+
+        >>> shutil.move('C:\\bacon.txt', 'C:\\eggs\\new_bacon.txt')
+        'C:\\eggs\\new_bacon.txt'
+        
+        >>> shutil.move('C:\\bacon.txt', 'C:\\eggs')
+        'C:\\eggs'
+
+        >>> shutil.move('spam.txt', 'c:\\does_not_exist\\eggs\\ham')
+        FileNotFoundError: [Errno 2] No such file or directory: 
+        'c:\\does_not_exist\\eggs\\ham'
+
+    Safe Deletes with the Send2trash Module:
+        >>> import send2trash
+        >>> baconFile = open('bacon.txt', 'a')
+        >>> baconFile.write('Bacon is not a vegetable.')
+        25
+        >>> baconFile.close()
+        >>> send2trash.send2trash('bacon.txt')
+
+Compressing Files with the Zipfile Module
+    Reading ZIP Files:
+        >>> import zipfile, os
+        >>> from pathlib import Path
+        >>> p = Path.home()
+        >>> exampleZip = zipfile.ZipFile(p / 'example.zip')
+        >>> exampleZip.namelist()
+        ['spam.txt', 'cats/', 'cats/catnames.txt', 'cats/zophie.jpg']
+        >>> spamInfo = exampleZip.getinfo('spam.txt')
+        >>> spamInfo.file_size
+        13908
+        >>> spamInfo.compress_size
+        3828
+        >>> f'Compressed file is {round(spamInfo.file_size / spamInfo
+        .compress_size, 2)}x smaller!'
+        'Compressed file is 3.63x smaller!'
+        >>> exampleZip.close()
+
+    Extracting from ZIP Files:
+        >>> import zipfile, os
+        >>> from pathlib import Path
+        >>> p = Path.home()
+        >>> exampleZip = zipfile.ZipFile(p/'example.zip')
+        >>> exampleZip.extractall()
+        >>> exampleZip.close()
+
+        >>> exampleZip.extract('spam.txt')
+        'C:\\spam.txt'
+        >>> exampleZip.extract('spam.txt', 'C:\\some\\new folders')
+        'C:\\some\\new\\folders\\spam.txt'
+        >>> exampleZip.close()
+
+    Creating and Adding to Zip Files:
+        >>> import zipfile
+        >>> newZip = zipfile.ZipFile('new.zip', 'w')
+        >>> newZip.write('spam.txt', compress_type=zipfile.ZIP_DEFLATED)
+        >>> newZip.close()
