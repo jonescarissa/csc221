@@ -1,0 +1,159 @@
+PDF Documents:
+    Extracting Text from PDFs:
+        >>> import PyPDF2
+        >>> pdfFileObj = open('meetingminutes.pdf', 'rb')
+        >>> pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
+        >>> pdfReader.numPages
+        19
+        >>> pageObj = pdfReader.getPage(0)
+        >>> pageObj.extractText()
+        'OOFFFFIICCIIAALL  BBOOAARRDD  MMIINNUUTTEESS   Meeting of \nMarch 7\n, 2014\n        \n     The Board of Elementary and Secondary Education shall provide leadership and \ncreate policies for education that expand opportunities for children, empower \nfamilies and communities, and advance Louisiana in an increasingly \ncompetitive glob\nal market.\n BOARD \n of ELEMENTARY\n and \n SECONDARY\n EDUCATION\n  '
+        >>> pdfFileObj.close()
+    
+    Decrypting PDFs:
+        >>> pdfReader = PyPDF2.PdfFileReader(open('encrypted.pdf', 'rb'))
+        >>> pdfReader.isEncrypted
+        True
+        >>> pdfReader = PyPDF2.PdfFileReader(open('encrypted.pdf', 'rb'))
+        >>> pdfReader.decrypt('rosebud')
+        1
+        >>> pageObj = pdfReader.getPage(0)
+    
+    Copying Pages:
+        >>> pdf1File = open('meetingminutes.pdf', 'rb')
+        >>> pdf2File = open('meetingminutes2.pdf', 'rb')
+        >>> pdf1Reader = PyPDF2.PdfFileReader(pdf1File)
+        >>> pdf2Reader = PyPDF2.PdfFileReader(pdf2File)
+        >>> pdfWriter = PyPDF2.PdfFileWriter()
+        >>> for pageNum in range(pdf1Reader.numPages):
+            ... pageObj = pdf1Reader.getPage(pageNum)
+            ... pdfWriter.addPage(pageObj)
+
+        >>> for pageNum in range(pdf2Reader.numPages):
+            ... pageObj = pdf2Reader.getPage(pageNum)
+            ... pdfWriter.addPage(pageObj)
+
+        >>> pdfOutputFile = open('combinedminutes.pdf', 'wb')
+        >>> pdfWriter.write(pdfOutputFile)
+        >>> pdfOutputFile.close()
+        >>> pdf1File.close()
+        >>> pdf2File.close()
+    
+    Rotating Pages:
+        >>> pdfReader = PyPDF2.PdfFileReader(minutesFile)
+        >>> page = pdfReader.getPage(0)
+        >>> page.rotateClockwise(90)
+        {'/Contents': [IndirectObject(961, 0), IndirectObject(962, 0)...
+        >>> pdfWriter = PyPDF2.PdfFileWriter()
+        >>> pdfWriter.addPage(page)
+        >>> resultPdfFile = open('rotatedPage.pdf', 'wb')
+        >>> pdfWriter.write(resultPdfFile)
+        >>> resultPdfFile.close()
+        >>> minutesFile.close()
+    
+    Overlaying Pages:
+        >>> minutesFile = open('meetingminutes.pdf', 'rb')
+        >>> pdfReader = PyPDF2.PdfFileReader(minutesFile)
+        >>> minutesFirstPage = pdfReader.getPage(0)
+        >>> pdfWatermarkReader = PyPDF2.PdfFileReader(open('watermark.pdf', 'rb'))
+        >>> minutesFirstPage.mergePage(pdfWatermarkReader.getPage(0))
+        >>> pdfWriter = PyPDF2.PdfFileWriter()
+        >>> pdfWriter.addPage(minutesFirstPage)
+        >>> for pageNum in range(1, pdfReader.numPages):
+        ...     pageObj = pdfReader.getPage(pageNum)
+        ...     pdfWriter.addPage(pageObj)
+        ...
+        >>> resultPdfFile = open('watermarkedCover.pdf', 'wb')
+        >>> pdfWriter.write(resultPdfFile)
+        >>> minutesFile.close()
+        >>> resultPdfFile.close()
+
+    Encrypting PDFs:
+        >>> pdfFile = open('meetingminutes.pdf', 'rb')
+        >>> pdfReader = PyPDF2.PdfFileReader(pdfFile)
+        >>> pdfWriter = PyPDF2.PdfFileWriter()
+        >>> for pageNum in range(pdfReader.numPages):
+        ...     pdfWriter.addPage(pdfReader.getPage(pageNum))
+        ...
+        >>> pdfWriter.encrypt('swordfish')
+        >>> resultPdf = open('encryptedminutes.pdf', 'wb')
+        >>> pdfWriter.write(resultPdf)
+        >>> resultPdf.close()
+
+Word Documents:
+    Reading Word Documents:
+        >>> import docx
+        >>> doc = docx.Document('demo.docx')
+        >>> len(doc.paragraphs)
+        7
+        >>> doc.paragraphs[0].text
+        'Document Title'
+        >>> doc.paragraphs[1].text
+        'A plain paragraph with some bold and some italic'
+        >>> len(doc.paragraphs[1].runs)
+        5
+        >>> doc.paragraphs[1].runs[0].text
+        'A plain paragraph with'
+        >>> doc.paragraphs[1].runs[1].text
+        ' some '
+        >>> doc.paragraphs[1].runs[2].text
+        'bold'
+        >>> doc.paragraphs[1].runs[3].text
+        ' and some '
+
+    Run Attributes:
+        >>> doc.paragraphs[0].text
+        'Document Title'
+        >>> doc.paragraphs[0].style
+        _ParagraphStyle('Title') id: 1371778051848
+        >>> doc.paragraphs[0].style = 'Normal'
+        >>> doc.paragraphs[1].text
+        'A plain paragraph with some bold and some italic'
+        >>> (doc.paragraphs[1].runs[0].text, doc.paragraphs[1].runs[1].text, doc.
+        ... paragraphs[1].runs[2].text, doc.paragraphs[1].runs[3].text)
+        ('A plain paragraph with', ' some ', 'bold', ' and some ')
+        >>> doc.paragraphs[1].runs[0].style = 'QuoteChar'
+        C:\Users\cj917\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.7_qbz5n2kfra8p0\LocalCache\local-packages\Python37\site-packages\docx\styles\styles.py:139: UserWarning: style lookup by style_id is deprecated. Use style name as key instead.
+        return self._get_style_id_from_style(self[style_name], style_type)
+        >>> doc.paragraphs[1].runs[1].underline = True
+        >>> doc.paragraphs[1].runs[3].underline = True
+        >>> doc.save('restyled.docx')
+
+    Writing Word Documents:
+        >>> doc = docx.Document()
+        >>> doc.add_paragraph('Hello, world!')
+        <docx.text.paragraph.Paragraph object at 0x0000013F645AA9C8>
+        >>> doc.save('helloworld.docx')
+
+        >>> doc.add_paragraph('Hello world!')
+        <docx.text.paragraph.Paragraph object at 0x0000013F645AAA48>
+        >>> paraObj1 = doc.add_paragraph('This is a second paragraph')
+        >>> paraObj2 = doc.add_paragraph('This is a yet another paragraph')
+        >>> paraObj1.add_run('This text is being added to the second paragraph')
+        <docx.text.run.Run object at 0x0000013F645AAB08>
+        >>> doc.save('multipleParagraphs.docx')
+    
+    Adding Headings:
+        >>> doc.add_heading('Header 0', 0)
+        <docx.text.paragraph.Paragraph object at 0x0000013F645AAF08>
+        >>> doc.add_heading('Header 1', 1)
+        <docx.text.paragraph.Paragraph object at 0x0000013F645B25C8>
+        >>> doc.add_heading('Header 2', 2)
+        <docx.text.paragraph.Paragraph object at 0x0000013F645B2508>
+        >>> doc.add_heading('Header 3', 3)
+        <docx.text.paragraph.Paragraph object at 0x0000013F645B25C8>
+        >>> doc.add_heading('Header 4', 4)
+        <docx.text.paragraph.Paragraph object at 0x0000013F645B2508>
+        >>> doc.save('headings.docx')
+    
+    Adding Line and Page Breaks:
+        >>> doc.add_paragraph('This is on the first page!')
+        <docx.text.paragraph.Paragraph object at 0x0000013F645AAE48>
+        >>> doc.paragraphs[0].runs[0].add_break(docx.enum.text.WD_BREAK.PAGE)
+        >>> doc.add_paragraph('This is on the second page!')
+        <docx.text.paragraph.Paragraph object at 0x0000013F645B2508>
+        >>> doc.save('twoPage.docx')
+    
+    Adding Pictures:
+        >>> doc.add_picture('zophie.png', width=docx.shared.Inches(1), height=docx.shared.Cm(4))
+        <docx.shape.InlineShape object at 0x0000013F645B2A48>

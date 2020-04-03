@@ -1,0 +1,224 @@
+Reading Excel Documents:
+    Opening Excel Documents with OpenPyXL:
+        >>> import openpyxl
+        >>> wb = openpyxl.load_workbook('example.xlsx')
+        >>> type(wb)
+        <class 'openpyxl.workbook.workbook.Workbook'>  
+
+    Getting Sheets from the Workbook:
+        >>> import openpyxl
+        >>> wb = openpyxl.load_workbook('example.xlsx')
+        >>> wb.sheetnames
+        ['Sheet1', 'Sheet2', 'Sheet3']
+        >>> sheet = wb['Sheet3']
+        >>> sheet
+        <Worksheet "Sheet3">
+        >>> type(sheet)
+        <class 'openpyxl.worksheet.worksheet.Worksheet'>
+        >>> sheet.title
+        'Sheet3'
+        >>> anotherSheet = wb.active
+        >>> anotherSheet
+        <Worksheet "Sheet1">
+
+    Getting Cells from the Sheets:
+        >>> import openpyxl
+        >>> wb = openpyxl.load_workbook('example.xlsx')
+        >>> sheet = wb['Sheet1']
+        >>> sheet['A1']
+        <Cell 'Sheet1'.A1>
+        >>> sheet['A1'].value
+        datetime.datetime(2014, 4, 5, 13, 34)
+        >>> c = sheet['B1']
+        >>> c.value
+        'Apples'
+        >>> 'Row %s, Column %s is %s' % (c.row, c.column, c.value)
+        'Row 1, Column 2 is Apples'
+        >>> 'Cell %s is %s' % (c.coordinate, c.value)
+        'Cell B1 is Apples'
+        >>> sheet['C1'].value
+        73
+
+        >>> sheet.cell(row=1, column=2)
+        <Cell 'Sheet1'.B1>
+        >>> sheet.cell(row=1,column=2).value
+        'Apples'
+        >>> for i in range(1, 8, 2):
+        ...     print(i, sheet.cell(row=i, column=2).value)
+        ...
+        1 Apples
+        3 Pears
+        5 Apples
+        7 Strawberries
+        
+        >>> import openpyxl
+        >>> wb = openpyxl.load_workbook('example.xlsx')
+        >>> sheet = wb['Sheet1']
+        >>> sheet.max_row
+        7
+        >>> sheet.max_column
+        3
+    
+    Converting Between Column Letters and Numbers:
+        >>> import openpyxl
+        >>> from openpyxl.utils import get_column_letter, column_index_from_string
+        >>> get_column_letter(1)
+        'A'
+        >>> get_column_letter(2)
+        'B'
+        >>> get_column_letter(27)
+        'AA'
+        >>> get_column_letter(900)
+        'AHP'
+        >>> wb = openpyxl.load_workbook('example.xlsx')
+        >>> sheet = wb['Sheet1']
+        >>> get_column_letter(sheet.max_column)
+        'C'
+        >>> column_index_from_string('A')
+        1
+        >>> column_index_from_string('AA')
+        27
+    
+    Getting Rows and Columns from the Sheets:
+        >>> sheet = wb['Sheet1']
+        >>> for rowOfCellObjects in sheet['A1': 'C3']:
+        ...     for cellObj in rowOfCellObjects:
+        ...             print(cellObj.coordinate, cellObj.value)
+        ...     print('---End of Row---')
+        ...
+        A1 2014-04-05 13:34:00
+        B1 Apples
+        C1 73
+        ---End of Row---
+        A2 2014-04-05 03:41:00
+        B2 Cherries
+        C2 85
+        ---End of Row---
+        A3 2014-04-06 12:46:00
+        B3 Pears
+        C3 14
+        ---End of Row---
+
+        >>> sheet = wb.active
+        >>> list(sheet.columns)[1]
+        (<Cell 'Sheet1'.B1>, <Cell 'Sheet1'.B2>, <Cell 'Sheet1'.B3>, <Cell 'Sheet1'.B4>, <Cell 'Sheet1'.B5>, <Cell 'Sheet1'.B6>, <Cell 'Sheet1'.B7>)
+        >>> for cellObj in list(sheet.columns)[1]:
+        ...     print(cellObj.value)
+        ...
+        Apples
+        Cherries
+        Pears
+        Oranges
+        Apples
+        Bananas
+        Strawberries
+
+Writing Excel Documents:
+    Creating and Saving Excel Documents:
+        >>> import openpyxl
+        >>> wb = openpyxl.Workbook()
+        >>> wb.sheetnames
+        ['Sheet']
+        >>> sheet = wb.active
+        >>> sheet.title
+        'Sheet'
+        >>> sheet.title = 'Spam Bacon Eggs Sheet'
+        >>> wb.sheetnames
+        ['Spam Bacon Eggs Sheet']
+
+        >>> wb = openpyxl.load_workbook('example.xlsx')
+        >>> sheet = wb.active
+        >>> sheet.title = 'Spam Spam Spam'
+        >>> wb.save('example_copy.xlsx')
+
+    Creating and Removing Sheets:
+        >>> wb = openpyxl.Workbook()
+        >>> wb.sheetnames
+        ['Sheet']
+        >>> wb.create_sheet()
+        <Worksheet "Sheet1">
+        >>> wb.sheetnames
+        ['Sheet', 'Sheet1']
+        >>> wb.create_sheet(index=0, title='First Sheet')
+        <Worksheet "First Sheet">
+        >>> wb.sheetnames
+        ['First Sheet', 'Sheet', 'Sheet1']
+        >>> wb.create_sheet(index=2, title='Middle Sheet')
+        <Worksheet "Middle Sheet">
+        >>> wb.sheetnames
+        ['First Sheet', 'Sheet', 'Middle Sheet', 'Sheet1'] 
+
+        >>> del wb['Middle Sheet']
+        >>> del wb['Sheet1']
+        >>> wb.sheetnames
+        ['First Sheet', 'Sheet']
+
+    Writing Values to Cells:
+        >>> wb = openpyxl.Workbook()
+        >>> sheet = wb['Sheet']
+        >>> sheet['A1'] = 'Hello, world!'
+        >>> sheet['A1'].value
+        'Hello, world!'
+
+Setting the Font Style of Cells:
+    >>> import openpyxl
+    >>> from openpyxl.styles import Font
+    >>> wb = openpyxl.Workbook()
+    >>> sheet = wb['Sheet']
+    >>> italic24Font = Font(size=24, italic=True)
+    >>> sheet['A1'].font = italic24Font
+    >>> sheet['A1'] = 'Hello, world!'
+    >>> wb.save('styles.xlsx')
+
+Font Objects:
+    >>> fontObj1 = Font(name='Times New Roman', bold=True)
+    >>> sheet['A1'].font = fontObj1
+    >>> sheet['A1'] = 'Bold Times New Roman'
+    >>> fontObj2 = Font(size=24, italic=True)
+    >>> sheet['B3'].font = fontObj2
+    >>> sheet['B3'] = '24 pt Italic'
+    >>> wb.save('styles.xlsx')
+
+Formulas:
+    >>> sheet = wb.active
+    >>> sheet['A1'] = 200
+    >>> sheet['A2'] = 300
+    >>> sheet['A3'] = '=SUM(A1:A2)'
+    >>> wb.save('writeFormula.xlsx')
+
+Adjusting Rows and Columns:
+    Setting Row Height and Column Width:
+        >>> sheet['A1'] = 'Tall row'
+        >>> sheet['B2'] = 'Wide column'
+        >>> sheet.row_dimensions[1].height = 70
+        >>> sheet.column_dimensions['B'].width = 20
+        >>> wb.save('dimensions.xlsx')
+    
+    Merging and Unmerging Cells:
+        >>> sheet.merge_cells('A1:D3')
+        >>> sheet['A1'] = 'Twelve cells merged together'
+        >>> sheet.merge_cells('C5:D5')
+        >>> sheet['C5'] = 'Two merged cells'
+        >>> wb.save('merged.xlsx')
+
+        >>> sheet.unmerge_cells('A1:D3')
+        >>> sheet.unmerge_cells('C5:D5')
+        >>> wb.save('merged.xlsx')
+
+    Freezing Panes:
+        >>> wb = openpyxl.load_workbook('produceSales.xlsx')
+        >>> sheet = wb.active
+        >>> sheet.freeze_panes = 'A2'
+        >>> wb.save('freezeExample.xlsx')
+
+Charts:
+    >>> for i in range(1,11):
+    ...     sheet['A' + str(i)] = i
+    ...
+    >>> refObj = openpyxl.chart.Reference(sheet, min_col=1, min_row=1, max_col=1, max_row=10)
+    >>> seriesObj = openpyxl.chart.Series(refObj, title='First series')
+    >>> chartObj = openpyxl.chart.BarChart()
+    >>> chartObj.title = 'My Chart'
+    >>> chartObj.append(seriesObj)
+    >>> sheet.add_chart(chartObj, 'C5')
+    >>> wb.save('sampleChart.xlsx')
