@@ -1,0 +1,138 @@
+Controlling Mouse Movement:
+    >>> import pyautogui
+    >>> wh = pyautogui.size()
+    >>> wh
+    Size(width=2256, height=1504)
+    >>> wh[0]
+    2256
+    >>> wh.width
+    2256
+
+    Moving the Mouse:
+        >>> import pyautogui
+        >>> for i in range(10): # Move mouse in a square.
+        ...       pyautogui.moveTo(100, 100, duration=0.25)
+        ...       pyautogui.moveTo(200, 100, duration=0.25)
+        ...       pyautogui.moveTo(200, 200, duration=0.25)
+        ...       pyautogui.moveTo(100, 200, duration=0.25)
+
+        >>> import pyautogui
+        >>> for i in range(10):
+        ...       pyautogui.move(100, 0, duration=0.25)   
+        ...       pyautogui.move(0, 100, duration=0.25)   
+        ...       pyautogui.move(-100, 0, duration=0.25)  
+        ...       pyautogui.move(0, -100, duration=0.25)  
+
+    Getting the Mouse Position:
+        >>> pyautogui.position()
+        Point(x=668, y=502)
+        >>> pyautogui.position()
+        Point(x=668, y=502)
+        >>> p = pyautogui.position()
+        >>> p
+        Point(x=668, y=502)
+        >>> p[0]
+        668
+        >>> p.x
+        668
+
+Controlling Mouse Interaction:
+    Clicking the Mouse:
+       >>> pyautogui.click(10, 5) 
+    
+    Scrolling the Mouse:
+       >>> pyautogui.scroll(200) 
+
+Planning Your Mouse Movements:
+    >>> pyautogui.mouseInfo()
+
+Working with the Screen:
+    Getting a Screenshot:
+        >>> im = pyautogui.screenshot()
+    
+    Analyzing the Screenshot:
+        >>> pyautogui.pixel((0, 0))
+        (176, 176, 175)
+        >>> pyautogui.pixel((50, 200))
+        (130, 135, 144)
+
+        >>> pyautogui.pixel((50, 200))
+        (130, 135, 144)
+        >>> pyautogui.pixelMatchesColor(50, 200, (130, 135, 144))
+        True
+        >>> pyautogui.pixelMatchesColor(50, 200, (255, 135, 144))
+        False 
+
+Image Recogniton:
+    >>> b = pyautogui.locateOnScreen('submit.png')
+    >>> b
+    Box(left=643, top=745, width=70, height=29)
+    >>> b[0]
+    643
+    >>> b.left
+    643
+    >>> list(pyautogui.locateAllOnScreen('submit.png'))
+    [(643, 745, 70, 29), (1007, 801, 70, 29)]   
+    >>> pyautogui.click((643, 745, 70, 29))
+
+Getting Window Information:
+    Obtaining the Active Window:
+        >>> fw = pyautogui.getActiveWindow()
+        >>> fw
+        Win32Window(hWnd=2034368)
+        >>> str(fw)
+        '<Win32Window left="500", top="300", width="2070", height="1208", title="Mu 1.0.1 – test1.py">'
+        >>> fw.title
+        'Mu 1.0.1 – test1.py'
+        >>> fw.size
+        (2070, 1208)
+        >>> fw.left, fw.top, fw.right, fw.bottom
+        (500, 300, 2070, 1208)
+        >>> fw.topleft
+        (256, 144)
+        >>> fw.area
+        2500560
+        >>> pyautogui.click(fw.left + 10, fw.top + 20)
+
+    Manipulating Windows:
+        >>> fw = pyautogui.getActiveWindow()
+        >>> fw.width 
+        1669
+        >>> fw.topleft 
+        (174, 153)
+        >>> fw.width = 1000 
+        >>> fw.topleft = (800, 400) 
+
+        >>> fw = pyautogui.getActiveWindow()
+        >>> fw.isMaximized 
+        False
+        >>> fw.isMinimized 
+        False
+        >>> fw.isActive 
+        True
+        >>> fw.maximize() 
+        >>> fw.isMaximized
+        True
+        >>> fw.restore() 
+        >>> fw.minimize() 
+        >>> import time
+        >>> # Wait 5 seconds while you activate a different window:
+        >>> time.sleep(5); fw.activate()
+        >>> fw.close() 
+
+Controlling the Keyboard:
+    Sending a String from the Keyboard:
+        >>> pyautogui.click(100, 200); pyautogui.write('Hello, world!')
+    
+    Key Names:
+       >>> pyautogui.write(['a', 'b', 'left', 'left', 'X', 'Y'])
+
+    Pressing and Releasing the Keyboard:
+       >>> pyautogui.keyDown('shift'); pyautogui.press('4'); pyautogui.keyUp('shift')
+
+Setting Up Your GUI Automation Scripts:
+    >>> pyautogui.sleep(3)  
+    >>> pyautogui.countdown(10)
+    10 9 8 7 6 5 4 3 2 1 
+    >>> print('Starting in', end=''); pyautogui.countdown(3)
+    Starting in3 2 1 
